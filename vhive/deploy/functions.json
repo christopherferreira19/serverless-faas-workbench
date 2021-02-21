@@ -1,0 +1,13 @@
+{
+    "functions": [
+        { "name": "chameleon",         "file": "chameleon.yaml",         "count": 1 },
+        { "name": "float_operation",   "file": "float_operation.yaml",   "count": 1 },
+        { "name": "image_processing",  "file": "image_processing.yaml",  "count": 1 },
+        { "name": "linpack",           "file": "linpack.yaml",           "count": 1 },
+        { "name": "mapreduce-driver",  "file": "mapreduce-driver.yaml",  "count": 1 },
+        { "name": "mapreduce-mapper",  "file": "mapreduce-mapper.yaml",  "count": 1 },
+        { "name": "mapreduce-reducer", "file": "mapreduce-reducer.yaml", "count": 1 },
+        { "name": "matmul",            "file": "matmul.yaml",            "count": 1 },
+        { "name": "pyaes",             "file": "pyaes.yaml",             "count": 1 },
+    ]
+}

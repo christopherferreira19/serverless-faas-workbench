@@ -1,0 +1,4 @@
+ARG PYTHON_BASE_IMG
+FROM ${PYTHON_BASE_IMG}
+
+COPY lambda_function.py ${PYTHONPATH}/
