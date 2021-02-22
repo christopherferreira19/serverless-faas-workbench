@@ -1,0 +1,11 @@
+#! /bin/bash
+
+dir="$(readlink -f "$(dirname "$0")")"
+
+for function in "$@"; do
+    kn service apply "${function}" \
+        -f "${dir}/knative/${function}.yaml" \
+        --concurrency-target 1 &
+done
+
+wait

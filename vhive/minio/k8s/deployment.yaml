@@ -16,11 +16,11 @@ spec:
         app: minio
     spec:
       # Refer to the PVC created earlier
-      volumes:
-      - name: storage
-        persistentVolumeClaim:
-          # Name of the PVC created earlier
-          claimName: minio-pv-claim
+      # volumes:
+      # - name: storage
+      #   persistentVolumeClaim:
+      #     # Name of the PVC created earlier
+      #     claimName: minio-pv-claim
       containers:
       - name: minio
         # Pulls the default Minio image from Docker Hub
@@ -38,6 +38,6 @@ spec:
         - containerPort: 9000
           hostPort: 9000
         # Mount the volume into the pod
-        volumeMounts:
-        - name: storage # must match the volume name, above
-          mountPath: "/storage"
+        # volumeMounts:
+        # - name: storage # must match the volume name, above
+        #   mountPath: "/storage"

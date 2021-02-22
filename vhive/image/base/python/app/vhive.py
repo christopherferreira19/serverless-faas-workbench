@@ -7,11 +7,26 @@ import grpc
 import service_pb2
 import service_pb2_grpc
 
+if 'MINIO_URL' in os.environ:
+    MINIO_URL = os.environ['MINIO_URL']
+else:
+    MINIO_URL = "http://192.168.1.241:9000"
+
+if 'MINIO_ACCESSKEYID' in os.environ:
+    MINIO_ACCESSKEYID = os.environ['MINIO_ACCESSKEYID']
+else:
+    MINIO_ACCESSKEYID = 'minio'
+
+if 'MINIO_SECRETACCESSKEY' in os.environ:
+    MINIO_SECRETACCESSKEY = os.environ['MINIO_SECRETACCESSKEY']
+else:
+    MINIO_SECRETACCESSKEY = 'minio123'
+
 def _minio_kwargs():
     return {
-        'endpoint_url':          os.environ['MINIO_URL'],
-        'aws_access_key_id':     os.environ['MINIO_ACCESSKEYID'],
-        'aws_secret_access_key': os.environ['MINIO_SECRETACCESSKEY'],
+        'endpoint_url':          MINIO_URL,
+        'aws_access_key_id':     MINIO_ACCESSKEYID,
+        'aws_secret_access_key': MINIO_SECRETACCESSKEY,
         'config':                botocore.client.Config(signature_version='s3v4'),
         'region_name':           'us-east-1',
     }
@@ -26,19 +41,23 @@ def client(kind):
     if kind == 's3':
         return boto3.client('s3', **_minio_kwargs())
     elif kind == 'lambda':
-        return Boto3ClientLambda()
+        return Boto3VhiveClientLambda()
     else:
         raise NameError(f"[Boto3Vhive] Unsupported client {kind}")
 
 class Boto3VhiveClientLambda:
 
-    def invoke(FunctionName, InvocationType, Payload):
-        namespace_name = os.environ['VHIVE_NAMESPACE_NAME']
-        gateway_url = os.environ['VHIVE_GATEWAY_URL']
-        url = f'{FunctionName}.{namespace_name}.{gateway_url}'
+    def invoke(self, FunctionName, InvocationType, Payload):
+        print(f"Invoking {FunctionName} with payload: {Payload}")
+        url = f'{FunctionName}.default.192.168.1.240.xip.io'
 
         channel = grpc.insecure_channel(url)
         stub = service_pb2_grpc.ServiceStub(channel)
         response = stub.Serve(service_pb2.Request(message=Payload))
-        return { 'Payload': response.message }
+        return { 'Payload': Boto3VhiveStreamingBody(response.message) }
 
+class Boto3VhiveStreamingBody:
+    def __init__(self, body):
+        self._body = body
+    def read(self):
+        return body

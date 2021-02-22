@@ -2,7 +2,7 @@
 
 DOCKER=${DOCKER:-docker}
 IMG_PREFIX=christopherferreira/vhive
-MINIO_IP=172.17.0.3
+MINIO_IP=${MINIO_IP:-172.17.0.2}
 
 workload=$1; shift
 
@@ -11,7 +11,5 @@ $DOCKER run -ti \
 	-e MINIO_URL="http://${MINIO_IP}:9000" \
 	-e MINIO_ACCESSKEYID="minioadmin" \
 	-e MINIO_SECRETACCESSKEY="minioadmin" \
-	-e VHIVE_GATEWAY_URL="192.168.1.240.xip.io" \
-	-e VHIVE_NAMESPACE_NAME="default" \
 	"${IMG_PREFIX}-${workload}" \
 	"$@"

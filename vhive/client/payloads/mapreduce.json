@@ -1,0 +1,5 @@
+{
+	"job_bucket": "jobbucket",
+	"bucket": "mapreduce",
+	"n_mapper": 1
+}

@@ -1,0 +1,6 @@
+{
+    "input_bucket": "image",
+    "object_key": "image.jpg",
+    "output_bucket": "imageoutput",
+    "operation": "flip_left_right"
+}

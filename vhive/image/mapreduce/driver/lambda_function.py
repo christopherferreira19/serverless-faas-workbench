@@ -21,7 +21,7 @@ def map_invoke_lambda(job_bucket, bucket, all_keys, batch_size, mapper_id):
     key = key[:-1]
 
     response = lambda_client.invoke(
-        FunctionName='mapper',
+        FunctionName='mapreduce-mapper',
         InvocationType='RequestResponse',
         Payload=json.dumps({
             "job_bucket": job_bucket,
@@ -30,7 +30,7 @@ def map_invoke_lambda(job_bucket, bucket, all_keys, batch_size, mapper_id):
             "mapper_id": mapper_id
         })
     )
-    output = eval(response['Payload'].read())
+    output = response['Payload'].read()
     print("mapper output : ", output)
 
     json_data = json.loads(output)
@@ -42,13 +42,13 @@ def map_invoke_lambda(job_bucket, bucket, all_keys, batch_size, mapper_id):
 
 def reduce_invoke_lambda(job_bucket):
     response = lambda_client.invoke(
-        FunctionName='reducer',
+        FunctionName='mapreduce-reducer',
         InvocationType='RequestResponse',
         Payload=json.dumps({
             "job_bucket": job_bucket
         })
     )
-    output = eval(response['Payload'].read())
+    output = response['Payload'].read()
     print("reducer output : ", output)
 
 
@@ -70,12 +70,14 @@ def lambda_handler(event, context):
     batch_size = 0
 
     if total_size % n_mapper == 0:
-        batch_size = total_size / n_mapper
+        batch_size = int(total_size / n_mapper)
     else:
-        batch_size = total_size // n_mapper + 1
+        batch_size = int(total_size // n_mapper + 1)
 
     for idx in range(n_mapper):
-        print("mapper-" + str(idx) + ":" + str(all_keys[idx * batch_size: (idx + 1) * batch_size]))
+        idx_from = idx * batch_size
+        idx_to   = (idx + 1) * batch_size
+        print("mapper-" + str(idx) + ":" + str(all_keys[idx_from:idx_to]))
 
     pool = ThreadPool(n_mapper)
     invoke_lambda_partial = partial(map_invoke_lambda, job_bucket, src_bucket, all_keys, batch_size)

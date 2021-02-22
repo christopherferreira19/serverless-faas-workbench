@@ -1,20 +1,22 @@
-import boto3
+import vhive
 import json
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 import time
 
 # Create AWS resource and client
-s3 = boto3.resource('s3')
-s3_client = boto3.client('s3')
-lambda_client = boto3.client('lambda')
+s3 = vhive.resource('s3')
+s3_client = vhive.client('s3')
+lambda_client = vhive.client('lambda')
 
 total_map = 0
 total_network = 0
 
 
 def map_invoke_lambda(job_bucket, bucket, all_keys, batch_size, mapper_id):
-    keys = all_keys[mapper_id * batch_size: (mapper_id + 1) * batch_size]
+    keys_from = mapper_id * batch_size
+    keys_to = (mapper_id + 1) * batch_size
+    keys = all_keys[keys_from:keys_to]
     key = ""
     for item in keys:
         key += item + '/'

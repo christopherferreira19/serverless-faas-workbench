@@ -22,3 +22,5 @@ prepare_bucket "image"  "$DATASET_ROOT/image"
 $MC mb -p $SERVER/imageoutput
 prepare_bucket "model"  "$DATASET_ROOT/model"
 prepare_bucket "review" "$DATASET_ROOT/amzn_fine_food_reviews"
+$MC mb -p $SERVER/jobbucket
+prepare_bucket "mapreduce" "$DATASET_ROOT/mapreduce"

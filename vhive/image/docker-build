@@ -1,0 +1,35 @@
+#! /bin/bash
+
+DOCKER=${DOCKER:-docker}
+IMG_PREFIX=christopherferreira/vhive
+
+dir="$(readlink -f "$(dirname "$0")")"
+push=$1
+
+docker-build() {
+	name=$1; shift
+
+	path=${dir}/$name
+	tag=${IMG_PREFIX}-$(echo $name | tr '/_' '-')
+
+	$DOCKER build ${path} -t ${tag} \
+		--build-arg PYTHON_BASE_IMG=${IMG_PREFIX}-base-python
+
+	if [[ $push == "--push" ]]; then
+		$DOCKER push ${tag}
+	fi
+}
+
+docker-build base/python
+# docker-build chameleon
+# docker-build float_operation
+# docker-build helloworld
+# docker-build image_processing
+# docker-build linpack
+docker-build mapreduce/driver
+# docker-build mapreduce/mapper
+# docker-build mapreduce/reducer
+# docker-build matmul
+# docker-build model_training
+# docker-build pyaes
+# docker-build video_processing

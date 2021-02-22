@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "github.com/christopherferreira19/serverless-faas-workbench/vhive/client/service";
+
 service Service {
   rpc Serve (Request) returns (Response);
 }
